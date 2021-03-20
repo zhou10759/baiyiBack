@@ -1,10 +1,11 @@
 import request from '@/utils/request'
+import qs from 'qs'
 
 export function adminLogin(data) {
   return request({
     url: '/admin/adminLogin',
     method: 'post',
-    data
+    data: qs.stringify( data )
   })
 }
 

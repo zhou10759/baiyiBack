@@ -75,7 +75,7 @@ export default {
       },
     };
     let res = await getRichText();
-    console.log("——————————————————————————", res);
+    this.editor.txt.html(res.data);
   },
   methods: {
     getEditorVal() {

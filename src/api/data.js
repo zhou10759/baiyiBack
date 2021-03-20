@@ -1,3 +1,4 @@
+import qs from 'qs'
 import request from "../utils/request";
 
 export function getInitData(data){
@@ -27,6 +28,15 @@ export function addUser(data){
 export function pullBlack(data){
     return request({
         url: "/admin/pullBlack",
+        method: "POST",
+        data
+    })
+}
+
+
+export function deleteUser(data){
+    return request({
+        url: "/admin/deleteUser",
         method: "POST",
         data
     })
@@ -67,7 +77,7 @@ export function updateRichText(data){
     return request({
         url: "/admin/updateRichText",
         method: "POST",
-        data
+        data: qs.stringify( data )
     })
 }
 

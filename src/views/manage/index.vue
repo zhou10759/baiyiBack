@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间"> </el-table-column>
-      <el-table-column>
+      <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -65,6 +65,12 @@
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
+            >拉黑</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDel(scope.$index, scope.row)"
             >删除</el-button
           >
         </template>
@@ -129,7 +135,13 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { getUserList, addUser, updateIntegral , pullBlack } from "@/api/data";
+import {
+  getUserList,
+  addUser,
+  updateIntegral,
+  pullBlack,
+  deleteUser,
+} from "@/api/data";
 export default {
   name: "Dashboard",
   computed: {
@@ -205,7 +217,7 @@ export default {
     },
     handleCurrentChange(current) {
       this.searchCriteria = current;
-      this.getUser()
+      this.getUser();
     },
     handleAvatarSuccess(res) {
       if (res.code === "000000") {
@@ -264,12 +276,50 @@ export default {
       });
     },
     handleDelete(index, row) {
-      pullBlack({
-        userId: row.userId
-      }).then(res=>{
-        this.getUser()
-        this.$message.success("删除成功")
-      })
+      let that = this;
+      that
+        .$confirm("是否要拉黑该用户?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then(() => {
+          deleteUser({
+            userId: row.userId,
+          }).then((res) => {
+            that.getUser();
+            that.$message.success("拉黑成功");
+          });
+        })
+        .catch(() => {
+          that.$message({
+            type: "info",
+            message: "已取消拉黑",
+          });
+        });
+    },
+    handleDel(index, row) {
+      let that = this;
+      that
+        .$confirm("是否要删除该用户?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then(() => {
+          pullBlack({
+            userId: row.userId,
+          }).then((res) => {
+            that.getUser();
+            that.$message.success("删除成功");
+          });
+        })
+        .catch(() => {
+          that.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     handleDownload() {
       // this.downloadLoading = true;
@@ -303,7 +353,7 @@ export default {
           return v[j];
         })
       );
-    }
+    },
   },
 };
 </script>
